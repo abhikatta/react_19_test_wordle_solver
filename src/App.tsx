@@ -1,47 +1,51 @@
-import { useActionState, useState } from "react";
 import { addInput } from "./redux/inputs/inputs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LetterType } from "./redux/inputs/types";
+import { AppDispatch, RootState } from "./redux/store";
+import { useEffect } from "react";
 
 const App = () => {
-  const [pendingAlphabetsCount, setPendingAlphabetsCount] = useState<number>(0);
-  const dispatch = useDispatch();
-  const onSubmit = (_: any | null, formData: FormData) => {
-    Array.from({ length: 5 }).map((_, index) => {
-      formData?.get(`G_L${index + 1}`) ||
-        setPendingAlphabetsCount((prevCount) => prevCount + 1);
-      formData?.get(`Y_L${index + 1}`) ||
-        setPendingAlphabetsCount((prevCount) => prevCount + 1);
-      formData?.get("gray_letters") ||
-        setPendingAlphabetsCount((prevCount) => prevCount + 1);
-    });
-  };
+  const dispatch = useDispatch<AppDispatch>();
+  const appState = useSelector((state: RootState) => state.inputs);
+  useEffect(() => {
+    console.log(appState);
+  });
 
-  const [error, submitAction] = useActionState(onSubmit, null);
   const onChange = (
     letterType: LetterType,
     letterValue: string,
-    letterPosition?: number
+    letterPosition: number = 0
   ) => {
     dispatch(
       addInput({
         type: letterType,
         value: letterValue,
-        position: letterPosition,
+        position: letterType === "yellow" ? letterPosition - 5 : letterPosition,
       })
     );
   };
 
-  error && <p>{error}</p>;
   return (
-    <form
-      className="h-screen w-screen bg-slate-600 flex flex-col justify-center items-center gap-5"
-      action={submitAction}>
+    <div className="h-screen w-screen bg-slate-600 flex flex-col justify-center items-center gap-5">
       <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
+        <ol className="text-white my-5">
+          <li className="list-disc">
+            Please Make sure that the letters in yellow boxes or gray input
+            field are not repeated in other yellow boxes or the gray input field
+          </li>
+          <li className="list-disc">
+            Letters in green boxes can be repeated, but only in other green
+            boxes.
+          </li>
+          <li className="list-disc">
+            Pleae make sure that if a letter exists in green or yellow box, it
+            CAN'T exist in the gray box or vice versa.
+          </li>
+        </ol>
         <div className="grid h-auto gap-9 grid-cols-5 grid-rows-2 justify-center items-center">
           {Array.from({ length: 15 }).map((_, index) => {
             return (
-              <div key={index}>
+              <div key={index} className=" font-extrabold text-xl">
                 {index < 5 && (
                   <input
                     onChange={(e) =>
@@ -64,15 +68,21 @@ const App = () => {
             );
           })}
           <input
-            maxLength={26 - pendingAlphabetsCount}
+            maxLength={26}
             onChange={(e) => onChange("gray", e.target.value)}
             className=" w-[25rem] h-[3rem] text-center bg-slate-700 rounded-md outline-none border-none text-white"
             name="gray_letters"></input>
         </div>
-        <p>{pendingAlphabetsCount}</p>
       </div>
       <button type="submit">Submit</button>
-    </form>
+      {/* <div className="flex flex-row">
+        {appState.green_letters.map((letter, index) => (
+          <p className="text-white" key={index}>
+            {letter.value}
+          </p>
+        ))}
+      </div> */}
+    </div>
   );
 };
 

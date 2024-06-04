@@ -2,7 +2,10 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { LetterType } from "./types";
 
 export interface InitialState {
-  existsInArray: boolean;
+  existsInArray: {
+    gray: boolean;
+    yellow: boolean;
+  };
   gray_letters: string[] | null;
   green_letters: [
     {
@@ -19,7 +22,10 @@ export interface InitialState {
 }
 
 const initialState: InitialState = {
-  existsInArray: false,
+  existsInArray: {
+    gray: false,
+    yellow: false,
+  },
   gray_letters: [],
   green_letters: [
     {
@@ -37,7 +43,7 @@ const initialState: InitialState = {
 
 interface PayloadType {
   value: string;
-  position?: number;
+  position: number;
   type: LetterType;
 }
 
@@ -46,32 +52,30 @@ const inputsSlice = createSlice({
   initialState: initialState,
   reducers: {
     addInput: (state, payload: PayloadAction<PayloadType>) => {
-      console.log(payload.payload);
-      const letterType = payload.payload.type;
-      const letterValue = payload.payload.value;
-      const letterPosition = payload.payload.position || 0;
+      const { type, value, position } = payload.payload;
 
-      if (letterType === "gray") {
+      state.existsInArray.gray = false;
+      state.existsInArray.yellow = false;
+
+      if (type === "gray") {
         // no repeted values
-        if (state.gray_letters?.includes(letterValue)) {
-          state.existsInArray = true;
+        if (state.gray_letters?.find((item) => item === value)) {
         } else {
-          state.gray_letters?.push(letterValue);
+          state.gray_letters?.push(value);
         }
-      } else if (letterType === "green") {
+      } else if (type === "green") {
         // can have repeted values
         state.green_letters.push({
-          postion: letterPosition,
-          value: letterValue,
+          postion: position,
+          value: value,
         });
       } else {
         // no repeted values
-        if (state.yellow_letters.find((item) => item.value === letterValue)) {
-          state.existsInArray = true;
+        if (state.yellow_letters.find((item) => item.value === value)) {
         } else {
           state.yellow_letters.push({
-            postion: letterPosition,
-            value: letterValue,
+            postion: position,
+            value: value,
           });
         }
       }
