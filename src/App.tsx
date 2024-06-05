@@ -1,16 +1,16 @@
-import { addInput } from "./redux/inputs/inputs";
+import { addGrayLetters, addInput } from "./redux/inputs/inputs";
 import { useDispatch, useSelector } from "react-redux";
 import { LetterType } from "./redux/inputs/types";
 import { AppDispatch, RootState } from "./redux/store";
-import { useEffect } from "react";
+import Results from "./Results";
+import { setGrayFiltered } from "./redux/words/words";
+import { useEffect, useState } from "react";
 
 const App = () => {
+  const [grayLetters, setGrayLetters] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const appState = useSelector((state: RootState) => state.inputs);
-  useEffect(() => {
-    console.log(appState);
-  });
-
+  const inputLetters = useSelector((state: RootState) => state.inputs);
+  const wordsList = useSelector((state: RootState) => state.words);
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -24,6 +24,14 @@ const App = () => {
       })
     );
   };
+
+  const Submit = () => {
+    dispatch(addGrayLetters(grayLetters));
+  };
+
+  useEffect(() => {
+    console.log(inputLetters.yellow_letters);
+  });
 
   return (
     <div className="h-screen w-screen bg-slate-600 flex flex-col justify-center items-center gap-5">
@@ -53,7 +61,7 @@ const App = () => {
                     }
                     maxLength={1}
                     className="w-[3rem] h-[3rem] text-center bg-green-700 rounded-md outline-none border-none text-white"
-                    name={`G_L${index + 1}`}></input>
+                  />
                 )}
                 {index >= 5 && index < 10 && (
                   <input
@@ -62,26 +70,22 @@ const App = () => {
                       onChange("yellow", e.target.value, index + 1)
                     }
                     className="w-[3rem] h-[3rem] text-center bg-yellow-400 rounded-md outline-none border-none text-black"
-                    name={`Y_L${index - 4}`}></input>
+                  />
                 )}
               </div>
             );
           })}
           <input
             maxLength={26}
-            onChange={(e) => onChange("gray", e.target.value)}
+            onChange={(e) => setGrayLetters(e.target.value)}
             className=" w-[25rem] h-[3rem] text-center bg-slate-700 rounded-md outline-none border-none text-white"
-            name="gray_letters"></input>
+            name="gray_letters"
+          />
         </div>
       </div>
-      <button type="submit">Submit</button>
-      {/* <div className="flex flex-row">
-        {appState.green_letters.map((letter, index) => (
-          <p className="text-white" key={index}>
-            {letter.value}
-          </p>
-        ))}
-      </div> */}
+      <button onClick={Submit}>Submit</button>
+
+      <Results />
     </div>
   );
 };

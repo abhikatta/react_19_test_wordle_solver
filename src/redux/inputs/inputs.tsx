@@ -6,7 +6,7 @@ export interface InitialState {
     gray: boolean;
     yellow: boolean;
   };
-  gray_letters: string[] | null;
+  gray_letters: string;
   green_letters: [
     {
       value: string | null;
@@ -26,17 +26,17 @@ const initialState: InitialState = {
     gray: false,
     yellow: false,
   },
-  gray_letters: [],
+  gray_letters: "",
   green_letters: [
     {
       value: null,
-      postion: 0,
+      postion: -1,
     },
   ],
   yellow_letters: [
     {
       value: null,
-      postion: 0,
+      postion: -1,
     },
   ],
 };
@@ -57,13 +57,7 @@ const inputsSlice = createSlice({
       state.existsInArray.gray = false;
       state.existsInArray.yellow = false;
 
-      if (type === "gray") {
-        // no repeted values
-        if (state.gray_letters?.find((item) => item === value)) {
-        } else {
-          state.gray_letters?.push(value);
-        }
-      } else if (type === "green") {
+      if (type === "green") {
         // can have repeted values
         state.green_letters.push({
           postion: position,
@@ -71,8 +65,13 @@ const inputsSlice = createSlice({
         });
       } else {
         // no repeted values
-        if (state.yellow_letters.find((item) => item.value === value)) {
-        } else {
+        if (state.yellow_letters.find((item) => item.postion === position)) {
+          const item = state.yellow_letters.find(
+            (item) => item.postion === position
+          );
+          item!.value = value;
+        }
+        if (!state.yellow_letters.find((item) => item.value === value)) {
           state.yellow_letters.push({
             postion: position,
             value: value,
@@ -80,8 +79,27 @@ const inputsSlice = createSlice({
         }
       }
     },
+    addGrayLetters: (state, payload: PayloadAction<string>) => {
+      const { payload: grayLetters } = payload;
+      const isInGreen =
+        state.green_letters[0].value !== null &&
+        state.green_letters.map((letter) => grayLetters.includes(letter.value!))
+          ? true
+          : false;
+      const isInYellow =
+        state.yellow_letters[0].value !== null &&
+        state.yellow_letters.map((letter) =>
+          grayLetters.includes(letter.value!)
+        )
+          ? true
+          : false;
+
+      if (!isInGreen && !isInYellow) {
+        state.gray_letters = payload.payload;
+      }
+    },
   },
 });
 
-export const { addInput } = inputsSlice.actions;
+export const { addInput, addGrayLetters } = inputsSlice.actions;
 export default inputsSlice.reducer;

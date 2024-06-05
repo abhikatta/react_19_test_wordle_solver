@@ -1,7 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import InputsReducer from "../redux/inputs/inputs";
+import InputsReducer from "./inputs/inputs";
+import WordsReducer from "./words/words";
 const store = configureStore({
-  reducer: { inputs: InputsReducer },
+  reducer: { inputs: InputsReducer, words: WordsReducer },
 });
 
 export type AppDispatch = typeof store.dispatch;
