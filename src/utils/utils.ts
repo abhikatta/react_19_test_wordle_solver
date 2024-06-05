@@ -8,7 +8,7 @@
 
 // in all the words in the list:
 
-// 1.check which words dont have the string values and filter
+// 1.check which words dont have the string values and filter ✅
 
 // 2. check which words have the yellow values at their positions and filter
 

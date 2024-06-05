@@ -7,7 +7,7 @@ import { RootState } from "./redux/store";
 
 const Results = () => {
   const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state.words);
+  const state = useSelector((state: RootState) => state.words.allWords);
 
   const fetchDataFromApi = async () => {
     try {
@@ -24,30 +24,23 @@ const Results = () => {
     fetchDataFromApi();
   }, []);
 
-  return (
-    state.grayFilteredWords.length > 0 && (
-      <div className="flex flex-col items-center justify-center">
-        <p className="text-white">
-          Not sure but one of these might be what you're probably looking for:
-        </p>
-        {state.grayFilteredWords.length <= 1 && (
-          <p className="text-white">Bruh, you trolling me?🤨</p>
-        )}
-        <div className="grid grid-cols-10">
-          {state.grayFilteredWords.length > 1 ? (
-            state.grayFilteredWords
-              .slice(0, 20)
-              .map((word) => (
-                <p className="bg-slate-800 text-white text-center rounded-md mx-2 my-1 px-2 py-1">
-                  {word}
-                </p>
-              ))
-          ) : (
-            <div className="flex flex-col items-center text-center justify-center"></div>
-          )}
-        </div>
+  return state.length > 0 ? (
+    <div className="flex flex-col items-center justify-center">
+      <p className="text-white">
+        Not sure but one of these might be what you're probably looking for:
+      </p>
+      <div className="grid grid-cols-10">
+        {state.slice(0, 20).map((word, index) => (
+          <p
+            key={index}
+            className="bg-slate-800 text-white text-center rounded-md mx-2 my-1 px-2 py-1">
+            {word}
+          </p>
+        ))}
       </div>
-    )
+    </div>
+  ) : (
+    <></>
   );
 };
 

@@ -4,10 +4,14 @@ import { LetterType } from "./redux/types";
 import { AppDispatch, RootState } from "./redux/store";
 import Results from "./Results";
 import { useEffect, useState } from "react";
-import { setGrayFiltered } from "./redux/words/words";
+import {
+  setAllFiltered,
+  setGrayFiltered,
+  setYellowFiltered,
+} from "./redux/words/words";
 
 const App = () => {
-  const [grayLettersInput, setGrayLettersInput] = useState("");
+  // const [grayLettersInput, setGrayLettersInput] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const inputState = useSelector((state: RootState) => state.inputs);
   const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
@@ -27,7 +31,44 @@ const App = () => {
   };
 
   const Submit = async () => {
-    dispatch(addGrayLetters(grayLettersInput));
+    const gray_letters =
+      inputState.gray_letters.length > 0 && inputState.gray_letters.split("");
+    const filteredGrayWords: string[] = [];
+    if (gray_letters) {
+      wordsList.words.forEach((word) => {
+        const includesGrayLetter = gray_letters.some((letter) =>
+          word.includes(letter)
+        );
+        if (!includesGrayLetter) {
+          filteredGrayWords.push(word);
+        }
+      });
+    }
+
+    // yellow filtration:
+    const yellow_letters =
+      inputState.yellow_letters.length > 0 && inputState.yellow_letters;
+    const filteredYellowWords: string[] = [];
+    const isYellowWithValues =
+      yellow_letters &&
+      yellow_letters.some((item) => {
+        return item.value !== "";
+      });
+
+    if (isYellowWithValues) {
+      const words =
+        filteredGrayWords.length > 0 ? filteredGrayWords : wordsList.words;
+
+      words.forEach((word) => {
+        const includesYellowLetter = yellow_letters.every((letter) =>
+          word.includes(letter.value)
+        );
+        if (includesYellowLetter) {
+          filteredYellowWords.push(word);
+        }
+      });
+    }
+    dispatch(setAllFiltered(filteredYellowWords));
   };
 
   useEffect(() => {
@@ -37,21 +78,6 @@ const App = () => {
       inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
     });
   });
-
-  useEffect(() => {
-    const gray_letters = inputState.gray_letters.split("");
-    const filteredGrayWords: string[] = [];
-    gray_letters.length > 0 &&
-      wordsList.words.forEach((word) => {
-        const includesGrayLetter = gray_letters.some((letter) =>
-          word.includes(letter)
-        );
-        if (!includesGrayLetter) {
-          filteredGrayWords.push(word);
-        }
-      });
-    dispatch(setGrayFiltered(filteredGrayWords));
-  }, [dispatch, inputState.gray_letters, wordsList.words]);
 
   return (
     <div className=" min-h-screen h-full w-full bg-slate-600 flex flex-col justify-center items-center gap-5">
@@ -108,9 +134,10 @@ const App = () => {
           <input
             maxLength={26}
             type="text"
-            onChange={(e) => setGrayLettersInput(e.target.value)}
+            // onChange={(e) => setGrayLettersInput(e.target.value)}
+            onChange={(e) => dispatch(addGrayLetters(e.target.value))}
             className=" w-[25rem] h-[3rem] font-bold text-xl text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
-            name="gray_letters"
+            name="grayLetters"
           />
         </div>
       </div>
