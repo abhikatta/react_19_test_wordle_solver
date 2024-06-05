@@ -1,16 +1,17 @@
 import { addGrayLetters, addInput } from "./redux/inputs/inputs";
 import { useDispatch, useSelector } from "react-redux";
-import { LetterType } from "./redux/inputs/types";
+import { LetterType } from "./redux/types";
 import { AppDispatch, RootState } from "./redux/store";
 import Results from "./Results";
 import { useEffect, useState } from "react";
+import { setGrayFiltered } from "./redux/words/words";
 
 const App = () => {
-  const [grayLetters, setGrayLetters] = useState("");
+  const [grayLettersInput, setGrayLettersInput] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const inputState = useSelector((state: RootState) => state.inputs);
   const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
-  // const wordsList = useSelector((state: RootState) => state.words);
+  const wordsList = useSelector((state: RootState) => state.words);
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -25,21 +26,33 @@ const App = () => {
     );
   };
 
-  const Submit = () => {
-    dispatch(addGrayLetters(grayLetters));
+  const Submit = async () => {
+    dispatch(addGrayLetters(grayLettersInput));
   };
 
   useEffect(() => {
     const inputs = document.getElementsByName("letter");
     let i = currentInputPosition;
     inputs.forEach((inp) => {
-      inp.oninput = () => inputs[i + 1] && inputs[++i].focus();
+      inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
     });
   });
 
   useEffect(() => {
-    console.log(inputState);
-  });
+    const gray_letters = inputState.gray_letters.split("");
+    const filteredGrayWords: string[] = [];
+    gray_letters.length > 0 &&
+      wordsList.words.forEach((word) => {
+        const includesGrayLetter = gray_letters.some((letter) =>
+          word.includes(letter)
+        );
+        if (!includesGrayLetter) {
+          filteredGrayWords.push(word);
+        }
+      });
+    dispatch(setGrayFiltered(filteredGrayWords));
+  }, [dispatch, inputState.gray_letters, wordsList.words]);
+
   return (
     <div className=" min-h-screen h-full w-full bg-slate-600 flex flex-col justify-center items-center gap-5">
       <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
@@ -95,7 +108,7 @@ const App = () => {
           <input
             maxLength={26}
             type="text"
-            onChange={(e) => setGrayLetters(e.target.value)}
+            onChange={(e) => setGrayLettersInput(e.target.value)}
             className=" w-[25rem] h-[3rem] font-bold text-xl text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
             name="gray_letters"
           />

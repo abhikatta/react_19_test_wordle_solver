@@ -1,8 +1,8 @@
 // get two array of alphabets :
-ex: ["d", "g", "", "", "e"];
-ex: ["", "", "h", "", ""];
+// ex: ["d", "g", "", "", "e"];
+// ex: ["", "", "h", "", ""];
 // get a string can be any number under 26-length(!empty values in above arrays):
-ex: "djgeesnvid";
+// ex: "djgeesnvid";
 
 // algo:
 

@@ -51,8 +51,13 @@ export interface InitialState {
   ];
 }
 
-export interface PayloadType {
+export interface InputPayloadType {
   value: string;
   position: number;
   type: LetterType;
+}
+
+export interface InitialWordsState {
+  words: string[];
+  grayFilteredWords: string[];
 }

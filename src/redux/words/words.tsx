@@ -1,9 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { InitialWordsState } from "../types";
 
-interface InitialWordsState {
-  words: string[];
-  grayFilteredWords: string[];
-}
 const initialWordsState: InitialWordsState = {
   words: [],
   grayFilteredWords: [],

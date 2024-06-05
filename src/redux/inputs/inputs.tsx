@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { InitialState, PayloadType } from "./types";
+import { InitialState, InputPayloadType } from "../types";
 
 const initialState: InitialState = {
   existsInArray: {
@@ -57,7 +57,7 @@ const inputsSlice = createSlice({
   name: "inputs",
   initialState: initialState,
   reducers: {
-    addInput: (state, payload: PayloadAction<PayloadType>) => {
+    addInput: (state, payload: PayloadAction<InputPayloadType>) => {
       const {
         type: letterType,
         value: letterValue,
