@@ -59,6 +59,7 @@ export interface InputPayloadType {
 
 export interface InitialWordsState {
   words: string[];
+  fetchingData: boolean;
   grayFilteredWords: string[];
   yellowFilteredWords: string[];
   greenFilteredWords: string[];

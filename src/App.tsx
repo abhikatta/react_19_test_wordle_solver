@@ -4,11 +4,7 @@ import { LetterType } from "./redux/types";
 import { AppDispatch, RootState } from "./redux/store";
 import Results from "./Results";
 import { useEffect, useState } from "react";
-import {
-  setAllFiltered,
-  setGrayFiltered,
-  setYellowFiltered,
-} from "./redux/words/words";
+import { fetchWordsData, setAllFiltered } from "./redux/words/words";
 
 const App = () => {
   // const [grayLettersInput, setGrayLettersInput] = useState("");
@@ -45,6 +41,7 @@ const App = () => {
       });
     }
 
+    dispatch(setAllFiltered(filteredGrayWords));
     // yellow filtration:
     const yellow_letters =
       inputState.yellow_letters.length > 0 && inputState.yellow_letters;
@@ -72,6 +69,10 @@ const App = () => {
   };
 
   useEffect(() => {
+    dispatch(fetchWordsData());
+  }, [dispatch]);
+
+  useEffect(() => {
     const inputs = document.getElementsByName("letter");
     let i = currentInputPosition;
     inputs.forEach((inp) => {
@@ -81,72 +82,81 @@ const App = () => {
 
   return (
     <div className=" min-h-screen h-full w-full bg-slate-600 flex flex-col justify-center items-center gap-5">
-      <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
-        <ol className="text-white my-5">
-          <li className="list-disc">
-            Please Make sure that the letters in yellow boxes or gray input
-            field are not repeated in other yellow boxes or the gray input field
-          </li>
-          <li className="list-disc">
-            Letters in green boxes can be repeated, but only in other green
-            boxes.
-          </li>
-          <li className="list-disc">
-            Pleae make sure that if a letter exists in green or yellow box, it
-            CAN'T exist in the gray box or vice versa.
-          </li>
-        </ol>
-        <div className="grid h-auto gap-9 grid-cols-5 grid-rows-2 justify-center items-center">
-          {Array.from({ length: 15 }).map((_, index) => {
-            return (
-              <div key={index} className=" font-extrabold text-xl">
-                {index < 5 && (
-                  <input
-                    onFocus={(e) => {
-                      e.target.select();
-                      setCurrentInputPosition(index);
-                    }}
-                    name="letter"
-                    onChange={(e) =>
-                      onChange("green", e.target.value, index + 1)
-                    }
-                    maxLength={1}
-                    className="w-[3rem] h-[3rem] text-center bg-green-700 rounded-md outline-none border-none text-white uppercase"
-                  />
-                )}
-                {index >= 5 && index < 10 && (
-                  <input
-                    onFocus={(e) => {
-                      e.target.select();
-                      setCurrentInputPosition(index);
-                    }}
-                    name="letter"
-                    maxLength={1}
-                    onChange={(e) =>
-                      onChange("yellow", e.target.value, index + 1)
-                    }
-                    className="w-[3rem] h-[3rem] text-center bg-yellow-400 rounded-md outline-none border-none text-black uppercase"
-                  />
-                )}
-              </div>
-            );
-          })}
-          <input
-            maxLength={26}
-            type="text"
-            // onChange={(e) => setGrayLettersInput(e.target.value)}
-            onChange={(e) => dispatch(addGrayLetters(e.target.value))}
-            className=" w-[25rem] h-[3rem] font-bold text-xl text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
-            name="grayLetters"
-          />
+      <h1 className="text-3xl text-white">BAD WORDLE SOLVER</h1>
+      {wordsList.fetchingData ? (
+        <div>
+          <p className="text-3xl text-white">Loading...</p>
         </div>
-      </div>
-      <button
-        className="text-white bg-slate-500 px-4 py-2 rounded-md hover:px-6  transition-all duration-200"
-        onClick={Submit}>
-        Submit
-      </button>
-
+      ) : (
+        <>
+          <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
+            <ol className="text-white my-5">
+              <li className="list-disc">
+                Please Make sure that the letters in yellow boxes or gray input
+                field are not repeated in other yellow boxes or the gray input
+                field
+              </li>
+              <li className="list-disc">
+                Letters in green boxes can be repeated, but only in other green
+                boxes.
+              </li>
+              <li className="list-disc">
+                Pleae make sure that if a letter exists in green or yellow box,
+                it CAN'T exist in the gray box or vice versa.
+              </li>
+            </ol>
+            <div className="grid h-auto gap-9 grid-cols-5 grid-rows-2 justify-center items-center">
+              {Array.from({ length: 15 }).map((_, index) => {
+                return (
+                  <div key={index} className=" font-extrabold text-xl">
+                    {index < 5 && (
+                      <input
+                        onFocus={(e) => {
+                          e.target.select();
+                          setCurrentInputPosition(index);
+                        }}
+                        name="letter"
+                        onChange={(e) =>
+                          onChange("green", e.target.value, index + 1)
+                        }
+                        maxLength={1}
+                        className="w-[3rem] h-[3rem] text-center bg-green-700 rounded-md outline-none border-none text-white uppercase"
+                      />
+                    )}
+                    {index >= 5 && index < 10 && (
+                      <input
+                        onFocus={(e) => {
+                          e.target.select();
+                          setCurrentInputPosition(index);
+                        }}
+                        name="letter"
+                        maxLength={1}
+                        onChange={(e) =>
+                          onChange("yellow", e.target.value, index + 1)
+                        }
+                        className="w-[3rem] h-[3rem] text-center bg-yellow-400 rounded-md outline-none border-none text-black uppercase"
+                      />
+                    )}
+                  </div>
+                );
+              })}
+              <input
+                maxLength={26}
+                type="text"
+                // onChange={(e) => setGrayLettersInput(e.target.value)}
+                onChange={(e) => dispatch(addGrayLetters(e.target.value))}
+                className=" w-[25rem] h-[3rem] font-bold text-xl text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
+                name="grayLetters"
+              />
+            </div>
+          </div>
+          <button
+            className="text-white bg-slate-500 px-4 py-2 rounded-md hover:px-6  transition-all duration-200"
+            onClick={Submit}>
+            Submit
+          </button>
+        </>
+      )}
       <Results />
     </div>
   );

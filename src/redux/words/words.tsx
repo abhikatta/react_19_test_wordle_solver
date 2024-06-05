@@ -1,13 +1,23 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { InitialWordsState } from "../types";
+import { API_URl } from "../../constants";
 
 const initialWordsState: InitialWordsState = {
   words: [],
+  fetchingData: false,
   grayFilteredWords: [],
   yellowFilteredWords: [],
   greenFilteredWords: [],
   allWords: [],
 };
+
+const fetchDataFromApi = createAsyncThunk("fetchWords", async () => {
+  const res = await fetch(API_URl);
+  const data = await res.text();
+  const words = data.split("\n");
+  return words;
+});
+
 const wordsListSlice = createSlice({
   name: "words",
   initialState: initialWordsState,
@@ -28,6 +38,16 @@ const wordsListSlice = createSlice({
       state.allWords = payload.payload;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchDataFromApi.fulfilled, (state, action) => {
+        state.words = action.payload;
+        state.fetchingData = false;
+      })
+      .addCase(fetchDataFromApi.pending, (state) => {
+        state.fetchingData = true;
+      });
+  },
 });
 export const {
   setWords,
@@ -36,5 +56,5 @@ export const {
   setYellowFiltered,
   setAllFiltered,
 } = wordsListSlice.actions;
-
+export { fetchDataFromApi as fetchWordsData };
 export default wordsListSlice.reducer;
