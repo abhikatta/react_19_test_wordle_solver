@@ -39,9 +39,9 @@ const App = () => {
           filteredGrayWords.push(word);
         }
       });
+      dispatch(setAllFiltered(filteredGrayWords));
     }
 
-    dispatch(setAllFiltered(filteredGrayWords));
     // yellow filtration:
     const yellow_letters =
       inputState.yellow_letters.length > 0 && inputState.yellow_letters;
@@ -64,8 +64,8 @@ const App = () => {
           filteredYellowWords.push(word);
         }
       });
+      dispatch(setAllFiltered(filteredYellowWords));
     }
-    dispatch(setAllFiltered(filteredYellowWords));
   };
 
   useEffect(() => {
@@ -82,7 +82,7 @@ const App = () => {
 
   return (
     <div className=" min-h-screen h-full w-full bg-slate-600 flex flex-col justify-center items-center gap-5">
-      <h1 className="text-3xl text-white">BAD WORDLE SOLVER</h1>
+      <h1 className="text-3xl text-white ">BAD WORDLE SOLVER</h1>
       {wordsList.fetchingData ? (
         <div>
           <p className="text-3xl text-white">Loading...</p>
