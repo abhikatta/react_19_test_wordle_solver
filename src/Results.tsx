@@ -22,7 +22,7 @@ const Results = () => {
 
   useEffect(() => {
     fetchDataFromApi();
-  }, []);
+  });
 
   return (
     <div>

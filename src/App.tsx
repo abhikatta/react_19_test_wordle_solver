@@ -1,14 +1,15 @@
 import { addGrayLetters, addInput } from "./redux/inputs/inputs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LetterType } from "./redux/inputs/types";
-import { AppDispatch } from "./redux/store";
+import { AppDispatch, RootState } from "./redux/store";
 import Results from "./Results";
 import { useEffect, useState } from "react";
 
 const App = () => {
   const [grayLetters, setGrayLetters] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  // const inputLetters = useSelector((state: RootState) => state.inputs);
+  const inputState = useSelector((state: RootState) => state.inputs);
+  const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
   // const wordsList = useSelector((state: RootState) => state.words);
   const onChange = (
     letterType: LetterType,
@@ -30,14 +31,17 @@ const App = () => {
 
   useEffect(() => {
     const inputs = document.getElementsByName("letter");
-    let i = 0;
+    let i = currentInputPosition;
     inputs.forEach((inp) => {
-      inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
+      inp.oninput = () => inputs[i + 1] && inputs[++i].focus();
     });
   });
 
+  useEffect(() => {
+    console.log(inputState);
+  });
   return (
-    <div className="h-screen w-screen bg-slate-600 flex flex-col justify-center items-center gap-5">
+    <div className=" min-h-screen h-full w-full bg-slate-600 flex flex-col justify-center items-center gap-5">
       <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
         <ol className="text-white my-5">
           <li className="list-disc">
@@ -59,7 +63,10 @@ const App = () => {
               <div key={index} className=" font-extrabold text-xl">
                 {index < 5 && (
                   <input
-                    onFocus={(e) => e.target.select()}
+                    onFocus={(e) => {
+                      e.target.select();
+                      setCurrentInputPosition(index);
+                    }}
                     name="letter"
                     onChange={(e) =>
                       onChange("green", e.target.value, index + 1)
@@ -70,7 +77,10 @@ const App = () => {
                 )}
                 {index >= 5 && index < 10 && (
                   <input
-                    onFocus={(e) => e.target.select()}
+                    onFocus={(e) => {
+                      e.target.select();
+                      setCurrentInputPosition(index);
+                    }}
                     name="letter"
                     maxLength={1}
                     onChange={(e) =>
@@ -86,7 +96,7 @@ const App = () => {
             maxLength={26}
             type="text"
             onChange={(e) => setGrayLetters(e.target.value)}
-            className=" w-[25rem] h-[3rem] text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
+            className=" w-[25rem] h-[3rem] font-bold text-xl text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
             name="gray_letters"
           />
         </div>
