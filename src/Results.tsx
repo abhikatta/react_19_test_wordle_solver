@@ -1,14 +1,13 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import { API_URl } from "./constants";
 import { useEffect } from "react";
 import { setWords } from "./redux/words/words";
-import { RootState } from "./redux/store";
+// import { RootState } from "./redux/store";
 
 const Results = () => {
   const dispatch = useDispatch();
-  const state = useSelector((state: RootState) => state.inputs);
-  console.log(state);
+  // const state = useSelector((state: RootState) => state.inputs);
 
   const fetchDataFromApi = async () => {
     try {
@@ -27,7 +26,7 @@ const Results = () => {
 
   return (
     <div>
-      <p>results:</p>
+      <p className="text-white">Results:</p>
     </div>
   );
 };

@@ -1,25 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LetterType } from "./types";
-
-export interface InitialState {
-  existsInArray: {
-    gray: boolean;
-    yellow: boolean;
-  };
-  gray_letters: string;
-  green_letters: [
-    {
-      value: string | null;
-      postion: number;
-    }
-  ];
-  yellow_letters: [
-    {
-      value: string | null;
-      postion: number;
-    }
-  ];
-}
+import { InitialState, PayloadType } from "./types";
 
 const initialState: InitialState = {
   existsInArray: {
@@ -29,65 +9,88 @@ const initialState: InitialState = {
   gray_letters: "",
   green_letters: [
     {
-      value: null,
-      postion: -1,
+      value: "",
+      postion: 1,
+    },
+    {
+      value: "",
+      postion: 2,
+    },
+    {
+      value: "",
+      postion: 3,
+    },
+    {
+      value: "",
+      postion: 4,
+    },
+    {
+      value: "",
+      postion: 5,
     },
   ],
   yellow_letters: [
     {
-      value: null,
-      postion: -1,
+      value: "",
+      postion: 1,
+    },
+    {
+      value: "",
+      postion: 2,
+    },
+    {
+      value: "",
+      postion: 3,
+    },
+    {
+      value: "",
+      postion: 4,
+    },
+    {
+      value: "",
+      postion: 5,
     },
   ],
 };
-
-interface PayloadType {
-  value: string;
-  position: number;
-  type: LetterType;
-}
 
 const inputsSlice = createSlice({
   name: "inputs",
   initialState: initialState,
   reducers: {
     addInput: (state, payload: PayloadAction<PayloadType>) => {
-      const { type, value, position } = payload.payload;
-
-      state.existsInArray.gray = false;
-      state.existsInArray.yellow = false;
-
-      if (type === "green") {
-        // can have repeted values
-        state.green_letters.push({
-          postion: position,
-          value: value,
-        });
-      } else {
-        // no repeted values
-        if (state.yellow_letters.find((item) => item.postion === position)) {
-          const item = state.yellow_letters.find(
-            (item) => item.postion === position
-          );
-          item!.value = value;
+      const {
+        type: letterType,
+        value: letterValue,
+        position: letterPosition,
+      } = payload.payload;
+      if (letterType === "green") {
+        const item = state.green_letters.find(
+          (item) => item.postion === letterPosition
+        );
+        if (item) {
+          item.value = letterValue;
         }
-        if (!state.yellow_letters.find((item) => item.value === value)) {
-          state.yellow_letters.push({
-            postion: position,
-            value: value,
-          });
+      } else if (letterType === "yellow") {
+        const item = state.yellow_letters.find(
+          (item) => item.postion === letterPosition
+        );
+        const isRepeated = state.yellow_letters.find(
+          (item) => item.value === letterValue
+        );
+        if (item && !isRepeated) {
+          item.value = letterValue;
         }
       }
     },
     addGrayLetters: (state, payload: PayloadAction<string>) => {
       const { payload: grayLetters } = payload;
       const isInGreen =
-        state.green_letters[0].value !== null &&
+        state.green_letters[0].value !== "" &&
         state.green_letters.map((letter) => grayLetters.includes(letter.value!))
           ? true
           : false;
       const isInYellow =
-        state.yellow_letters[0].value !== null &&
+        state.yellow_letters[0].value !== "" &&
         state.yellow_letters.map((letter) =>
           grayLetters.includes(letter.value!)
         )

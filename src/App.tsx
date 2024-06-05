@@ -1,16 +1,15 @@
 import { addGrayLetters, addInput } from "./redux/inputs/inputs";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { LetterType } from "./redux/inputs/types";
-import { AppDispatch, RootState } from "./redux/store";
+import { AppDispatch } from "./redux/store";
 import Results from "./Results";
-import { setGrayFiltered } from "./redux/words/words";
 import { useEffect, useState } from "react";
 
 const App = () => {
   const [grayLetters, setGrayLetters] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const inputLetters = useSelector((state: RootState) => state.inputs);
-  const wordsList = useSelector((state: RootState) => state.words);
+  // const inputLetters = useSelector((state: RootState) => state.inputs);
+  // const wordsList = useSelector((state: RootState) => state.words);
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -30,7 +29,11 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log(inputLetters.yellow_letters);
+    const inputs = document.getElementsByName("letter");
+    let i = 0;
+    inputs.forEach((inp) => {
+      inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
+    });
   });
 
   return (
@@ -56,20 +59,24 @@ const App = () => {
               <div key={index} className=" font-extrabold text-xl">
                 {index < 5 && (
                   <input
+                    onFocus={(e) => e.target.select()}
+                    name="letter"
                     onChange={(e) =>
                       onChange("green", e.target.value, index + 1)
                     }
                     maxLength={1}
-                    className="w-[3rem] h-[3rem] text-center bg-green-700 rounded-md outline-none border-none text-white"
+                    className="w-[3rem] h-[3rem] text-center bg-green-700 rounded-md outline-none border-none text-white uppercase"
                   />
                 )}
                 {index >= 5 && index < 10 && (
                   <input
+                    onFocus={(e) => e.target.select()}
+                    name="letter"
                     maxLength={1}
                     onChange={(e) =>
                       onChange("yellow", e.target.value, index + 1)
                     }
-                    className="w-[3rem] h-[3rem] text-center bg-yellow-400 rounded-md outline-none border-none text-black"
+                    className="w-[3rem] h-[3rem] text-center bg-yellow-400 rounded-md outline-none border-none text-black uppercase"
                   />
                 )}
               </div>
@@ -77,13 +84,18 @@ const App = () => {
           })}
           <input
             maxLength={26}
+            type="text"
             onChange={(e) => setGrayLetters(e.target.value)}
-            className=" w-[25rem] h-[3rem] text-center bg-slate-700 rounded-md outline-none border-none text-white"
+            className=" w-[25rem] h-[3rem] text-center bg-slate-700 rounded-md outline-none border-none text-white uppercase"
             name="gray_letters"
           />
         </div>
       </div>
-      <button onClick={Submit}>Submit</button>
+      <button
+        className="text-white bg-slate-500 px-4 py-2 rounded-md hover:px-6  transition-all duration-200"
+        onClick={Submit}>
+        Submit
+      </button>
 
       <Results />
     </div>
