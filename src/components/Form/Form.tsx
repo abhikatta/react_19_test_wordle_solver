@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { addGrayLetters } from "../redux/inputs/inputs";
-import { LetterType } from "../redux/types";
+import { LetterType } from "../../redux/types";
+import { addGrayLetters } from "../../redux/inputs/inputs";
 
 export const TheForm = ({
   setCurrentInputPosition,

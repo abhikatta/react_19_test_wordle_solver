@@ -5,7 +5,7 @@ import { AppDispatch, RootState } from "./redux/store";
 import Results from "./Results";
 import { useEffect, useState } from "react";
 import { fetchWordsData, setAllFiltered } from "./redux/words/words";
-import { TheForm } from "./components/Form";
+import { TheForm } from "./components/Form/Form";
 import { Submit } from "./utils/utils";
 
 const App = () => {

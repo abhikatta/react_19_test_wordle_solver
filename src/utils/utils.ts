@@ -30,6 +30,7 @@ export const Submit = (
       return !grayLetters.some((letter) => word.includes(letter));
     });
   }
+  console.log(filteredWords);
   // yellowwords filteration:
   const yellowLetters = yellow_letters.length > 0 ? yellow_letters : [];
   const isYellowNotNull = yellowLetters.some((item) => item.value !== "");
@@ -38,16 +39,23 @@ export const Submit = (
       return yellowLetters.every((letter) => word.includes(letter.value));
     });
   }
+  console.log(filteredWords);
 
   // green words filteration:
   const greenLetters = green_letters.length > 0 ? green_letters : [];
-  const isGreenNotNull = greenLetters.some((item) => item.value === "");
-  if (!isGreenNotNull) {
+  const isGreenNotNull = greenLetters.some((item) => item.value !== "");
+  if (isGreenNotNull) {
     filteredWords = filteredWords.filter((word) => {
-      return greenLetters.every(
-        (letter) => word[letter.position - 1] === letter.value
-      );
+      return greenLetters.every((letter) => {
+        if (letter.value !== "") {
+          return word[letter.position - 1] === letter.value;
+        } else {
+          return true;
+        }
+      });
     });
   }
+  console.log(filteredWords);
+
   return filteredWords;
 };
