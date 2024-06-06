@@ -10,7 +10,7 @@
 
 // 1.check which words dont have the string values and filter ✅
 
-// 2. check which words have the yellow values at their positions and filter ✅
+// 2. check which words have the yellow values and filter ✅
 
 // 3. check which words have the green values at their positions ✅
 
