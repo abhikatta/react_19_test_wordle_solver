@@ -9,7 +9,6 @@ import { TheForm } from "./components/Form";
 import { Submit } from "./utils/utils";
 
 const App = () => {
-  // const [grayLettersInput, setGrayLettersInput] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const { gray_letters, green_letters, yellow_letters } = useSelector(
     (state: RootState) => state.inputs
@@ -32,38 +31,6 @@ const App = () => {
       })
     );
   };
-
-  // const Submit = async () => {
-  //   let filteredWords: string[] = wordsList.words;
-  //   // gray words filteration:
-  //   const grayLetters = gray_letters.length > 0 ? gray_letters.split("") : [];
-  //   if (grayLetters.length > 0) {
-  //     filteredWords = filteredWords.filter((word) => {
-  //       return !grayLetters.some((letter) => word.includes(letter));
-  //     });
-  //   }
-  //   // yellowwords filteration:
-  //   const yellowLetters = yellow_letters.length > 0 ? yellow_letters : [];
-  //   const isYellowNotNull = yellowLetters.some((item) => item.value !== "");
-  //   if (isYellowNotNull) {
-  //     filteredWords = filteredWords.filter((word) => {
-  //       return yellowLetters.every((letter) => word.includes(letter.value));
-  //     });
-  //   }
-
-  //   // green words filteration:
-  //   const greenLetters = green_letters.length > 0 ? green_letters : [];
-  //   const isGreenNotNull = greenLetters.some((item) => item.value === "");
-  //   if (!isGreenNotNull) {
-  //     filteredWords = filteredWords.filter((word) => {
-  //       return greenLetters.every(
-  //         (letter) => word[letter.position - 1] === letter.value
-  //       );
-  //     });
-  //   }
-
-  //   dispatch(setAllFiltered(filteredWords));
-  // };
 
   useEffect(() => {
     dispatch(fetchWordsData());
