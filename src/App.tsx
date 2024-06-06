@@ -27,45 +27,44 @@ const App = () => {
   };
 
   const Submit = async () => {
-    const gray_letters =
-      inputState.gray_letters.length > 0 && inputState.gray_letters.split("");
-    const filteredGrayWords: string[] = [];
-    if (gray_letters) {
-      wordsList.words.forEach((word) => {
-        const includesGrayLetter = gray_letters.some((letter) =>
-          word.includes(letter)
-        );
-        if (!includesGrayLetter) {
-          filteredGrayWords.push(word);
-        }
+    const { gray_letters, green_letters, yellow_letters } = inputState;
+    let filteredWords: string[] = wordsList.words;
+    // gray words filteration:
+    console.log(filteredWords);
+    const grayLetters = gray_letters.length > 0 ? gray_letters.split("") : [];
+    if (grayLetters.length > 0) {
+      console.log("gray ran");
+      filteredWords = filteredWords.filter((word) => {
+        return !grayLetters.some((letter) => word.includes(letter));
       });
-      dispatch(setAllFiltered(filteredGrayWords));
+      console.log(filteredWords);
+    }
+    // yellowwords filteration:
+    const yellowLetters = yellow_letters.length > 0 ? yellow_letters : [];
+    const isYellowNotNull = yellowLetters.some((item) => item.value !== "");
+    if (isYellowNotNull) {
+      console.log("yelllow ran");
+      filteredWords = filteredWords.filter((word) => {
+        return yellowLetters.every((letter) => word.includes(letter.value));
+      });
+      console.log(filteredWords);
     }
 
-    // yellow filtration:
-    const yellow_letters =
-      inputState.yellow_letters.length > 0 && inputState.yellow_letters;
-    const filteredYellowWords: string[] = [];
-    const isYellowWithValues =
-      yellow_letters &&
-      yellow_letters.some((item) => {
-        return item.value !== "";
-      });
-
-    if (isYellowWithValues) {
-      const words =
-        filteredGrayWords.length > 0 ? filteredGrayWords : wordsList.words;
-
-      words.forEach((word) => {
-        const includesYellowLetter = yellow_letters.every((letter) =>
-          word.includes(letter.value)
+    // green words filteration:
+    const greenLetters = green_letters.length > 0 ? green_letters : [];
+    const isGreenNotNull = greenLetters.some((item) => item.value === "");
+    if (!isGreenNotNull) {
+      console.log("green ran");
+      filteredWords = filteredWords.filter((word) => {
+        return greenLetters.every(
+          (letter) => word[letter.position - 1] === letter.value
         );
-        if (includesYellowLetter) {
-          filteredYellowWords.push(word);
-        }
       });
-      dispatch(setAllFiltered(filteredYellowWords));
     }
+
+    console.log("final filteredWords", filteredWords);
+
+    dispatch(setAllFiltered(filteredWords));
   };
 
   useEffect(() => {
