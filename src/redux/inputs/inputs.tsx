@@ -1,11 +1,7 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { InitialState, InputPayloadType } from "../types";
+import { InitialInputState, InputPayloadType } from "../types";
 
-const initialState: InitialState = {
-  existsInArray: {
-    gray: false,
-    yellow: false,
-  },
+const initialState: InitialInputState = {
   gray_letters: "",
   green_letters: [
     { value: "", position: 1 },

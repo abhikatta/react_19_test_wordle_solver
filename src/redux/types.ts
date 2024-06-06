@@ -1,53 +1,19 @@
 export type LetterType = "gray" | "yellow" | "green";
-export interface InitialState {
-  existsInArray: {
-    gray: boolean;
-    yellow: boolean;
-  };
+export interface InitialInputState {
   gray_letters: string;
   green_letters: [
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    }
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number }
   ];
   yellow_letters: [
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    },
-    {
-      value: string;
-      position: number;
-    }
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number },
+    { value: string; position: number }
   ];
 }
 
