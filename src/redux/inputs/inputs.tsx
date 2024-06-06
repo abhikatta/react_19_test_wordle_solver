@@ -8,48 +8,18 @@ const initialState: InitialState = {
   },
   gray_letters: "",
   green_letters: [
-    {
-      value: "",
-      postion: 1,
-    },
-    {
-      value: "",
-      postion: 2,
-    },
-    {
-      value: "",
-      postion: 3,
-    },
-    {
-      value: "",
-      postion: 4,
-    },
-    {
-      value: "",
-      postion: 5,
-    },
+    { value: "", position: 1 },
+    { value: "", position: 2 },
+    { value: "", position: 3 },
+    { value: "", position: 4 },
+    { value: "", position: 5 },
   ],
   yellow_letters: [
-    {
-      value: "",
-      postion: 1,
-    },
-    {
-      value: "",
-      postion: 2,
-    },
-    {
-      value: "",
-      postion: 3,
-    },
-    {
-      value: "",
-      postion: 4,
-    },
-    {
-      value: "",
-      postion: 5,
-    },
+    { value: "", position: 1 },
+    { value: "", position: 2 },
+    { value: "", position: 3 },
+    { value: "", position: 4 },
+    { value: "", position: 5 },
   ],
 };
 
@@ -65,41 +35,22 @@ const inputsSlice = createSlice({
       } = payload.payload;
       if (letterType === "green") {
         const item = state.green_letters.find(
-          (item) => item.postion === letterPosition
+          (item) => item.position === letterPosition
         );
         if (item) {
           item.value = letterValue;
         }
       } else if (letterType === "yellow") {
         const item = state.yellow_letters.find(
-          (item) => item.postion === letterPosition
+          (item) => item.position === letterPosition
         );
-        const isRepeated = state.yellow_letters.find(
-          (item) => item.value === letterValue
-        );
-        if (item && !isRepeated) {
+        if (item) {
           item.value = letterValue;
         }
       }
     },
     addGrayLetters: (state, payload: PayloadAction<string>) => {
-      const { payload: grayLetters } = payload;
-      const isInGreen =
-        state.green_letters[0].value !== "" &&
-        state.green_letters.map((letter) => grayLetters.includes(letter.value!))
-          ? true
-          : false;
-      const isInYellow =
-        state.yellow_letters[0].value !== "" &&
-        state.yellow_letters.map((letter) =>
-          grayLetters.includes(letter.value!)
-        )
-          ? true
-          : false;
-
-      if (!isInGreen && !isInYellow) {
-        state.gray_letters = payload.payload;
-      }
+      state.gray_letters = payload.payload;
     },
   },
 });

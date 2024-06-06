@@ -8,45 +8,45 @@ export interface InitialState {
   green_letters: [
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     }
   ];
   yellow_letters: [
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     },
     {
       value: string;
-      postion: number;
+      position: number;
     }
   ];
 }
