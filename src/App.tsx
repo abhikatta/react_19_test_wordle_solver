@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { fetchWordsData, setAllFiltered } from "./redux/words/words";
 import { TheForm } from "./components/Form/Form";
 import { Submit } from "./utils/utils";
+import { UnknownAction } from "redux";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,7 +34,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchWordsData());
+    dispatch(fetchWordsData() as unknown as UnknownAction);
   }, [dispatch]);
 
   useEffect(() => {
