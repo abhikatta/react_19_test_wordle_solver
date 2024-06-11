@@ -36,7 +36,12 @@ export const Submit = (
   const isYellowNotNull = yellowLetters.some((item) => item.value !== "");
   if (isYellowNotNull) {
     filteredWords = filteredWords.filter((word) => {
-      return yellowLetters.every((letter) => word.includes(letter.value));
+      return yellowLetters.every((letter) => {
+        return (
+          word.includes(letter.value) &&
+          word[letter.position - 1] !== letter.value
+        );
+      });
     });
   }
   console.log(filteredWords);

@@ -24,6 +24,10 @@ const inputsSlice = createSlice({
   initialState: initialState,
   reducers: {
     addInput: (state, payload: PayloadAction<InputPayloadType>) => {
+      payload.payload = {
+        ...payload.payload,
+        value: payload.payload.value.trim(),
+      };
       const {
         type: letterType,
         value: letterValue,
@@ -31,14 +35,16 @@ const inputsSlice = createSlice({
       } = payload.payload;
       if (letterType === "green") {
         const item = state.green_letters.find(
-          (item) => item.position === letterPosition
+          (item: InitialInputState["green_letters"][0]) =>
+            item.position === letterPosition
         );
         if (item) {
           item.value = letterValue;
         }
       } else if (letterType === "yellow") {
         const item = state.yellow_letters.find(
-          (item) => item.position === letterPosition
+          (item: InitialInputState["yellow_letters"][0]) =>
+            item.position === letterPosition
         );
         if (item) {
           item.value = letterValue;
