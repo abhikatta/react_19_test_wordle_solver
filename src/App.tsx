@@ -9,7 +9,7 @@ import { TheForm } from "./components/Form/Form";
 import { Submit } from "./utils/utils";
 import { UnknownAction } from "redux";
 import Attempted from "./utils/setIsTried";
-
+import { Analytics } from "@vercel/analytics/react";
 const App = () => {
   const { useHasTried, setTried } = Attempted();
   const dispatch = useDispatch<AppDispatch>();
@@ -130,6 +130,7 @@ const App = () => {
           <Results />
         </>
       )}
+      <Analytics />
     </div>
   );
 };
