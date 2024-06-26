@@ -52,7 +52,7 @@ const inputsSlice = createSlice({
       }
     },
     addGrayLetters: (state, payload: PayloadAction<string>) => {
-      state.gray_letters = payload.payload;
+      state.gray_letters = payload.payload.trim();
     },
   },
 });

@@ -8,8 +8,10 @@ import { fetchWordsData, setAllFiltered } from "./redux/words/words";
 import { TheForm } from "./components/Form/Form";
 import { Submit } from "./utils/utils";
 import { UnknownAction } from "redux";
+import Attempted from "./utils/setIsTried";
 
 const App = () => {
+  const { useHasTried, setTried } = Attempted();
   const dispatch = useDispatch<AppDispatch>();
   const { gray_letters, green_letters, yellow_letters } = useSelector(
     (state: RootState) => state.inputs
@@ -17,8 +19,8 @@ const App = () => {
   const { words: defaultWords, fetchingData } = useSelector(
     (state: RootState) => state.words
   );
-
   const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
+
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -37,12 +39,21 @@ const App = () => {
     dispatch(fetchWordsData() as unknown as UnknownAction);
   }, [dispatch]);
 
+  const isInputEmpty = () => {
+    const isGrayEmpty = gray_letters.length <= 0;
+    const isYellowEmpty = yellow_letters.every((item) => item.value === "");
+    const isGreenEmpty = green_letters.every((item) => item.value === "");
+
+    return isGrayEmpty && isYellowEmpty && isGreenEmpty ? true : false;
+  };
+
   useEffect(() => {
     const inputs = document.getElementsByName("letter");
     let i = currentInputPosition;
     inputs.forEach((inp) => {
       inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
     });
+    isInputEmpty();
   });
 
   const handleSubmit = (filteredWords: string[]) => {
@@ -55,6 +66,13 @@ const App = () => {
       {fetchingData ? (
         <div>
           <p className="text-3xl text-white">Loading...</p>
+        </div>
+      ) : useHasTried ? (
+        <div>
+          <p className="text-3xl text-white">
+            Sorry, but you already used this today. Come back tomorrow if you
+            can't solve it.
+          </p>
         </div>
       ) : (
         <>
@@ -82,8 +100,21 @@ const App = () => {
             </div>
           </div>
           <button
-            className="text-white bg-slate-500 px-4 py-2 rounded-md hover:px-6  transition-all duration-200"
-            onClick={() =>
+            disabled={isInputEmpty() || useHasTried}
+            title={
+              isInputEmpty()
+                ? "Please make sure the inputs are not empty"
+                : useHasTried
+                ? "Already used for today!"
+                : ""
+            }
+            className={`text-white bg-slate-500 px-4 py-2 rounded-md transition-all duration-200
+              ${
+                isInputEmpty() || useHasTried
+                  ? "opacity-60 cursor-not-allowed"
+                  : "hover:px-6"
+              }`}
+            onClick={() => {
               handleSubmit(
                 Submit(
                   defaultWords,
@@ -91,13 +122,14 @@ const App = () => {
                   green_letters,
                   yellow_letters
                 )
-              )
-            }>
+              );
+              setTried();
+            }}>
             Submit
           </button>
+          <Results />
         </>
       )}
-      <Results />
     </div>
   );
 };
