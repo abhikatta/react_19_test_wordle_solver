@@ -8,10 +8,11 @@ import { fetchWordsData, setAllFiltered } from "./redux/words/words";
 import { TheForm } from "./components/Form/Form";
 import { Submit } from "./utils/utils";
 import { UnknownAction } from "redux";
-import Attempted from "./utils/setIsTried";
 import { Analytics } from "@vercel/analytics/react";
+import { pressedSubmit, resetSubmission } from "./utils/attemped";
+import { key } from "./constants";
+import { dataType } from "./utils/types";
 const App = () => {
-  const { useHasTried, setTried } = Attempted();
   const dispatch = useDispatch<AppDispatch>();
   const { gray_letters, green_letters, yellow_letters } = useSelector(
     (state: RootState) => state.inputs
@@ -20,7 +21,9 @@ const App = () => {
     (state: RootState) => state.words
   );
   const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
-
+  const attempted: boolean = (
+    JSON.parse(localStorage.getItem(key) as string) as dataType
+  )?.isSubmitted;
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -54,6 +57,7 @@ const App = () => {
       inp.oninput = () => inputs[i + 1] && inputs[(i += 1)].focus();
     });
     isInputEmpty();
+    resetSubmission();
   });
 
   const handleSubmit = (filteredWords: string[]) => {
@@ -67,7 +71,7 @@ const App = () => {
         <div>
           <p className="text-3xl text-white">Loading...</p>
         </div>
-      ) : useHasTried ? (
+      ) : attempted ? (
         <div>
           <p className="text-3xl text-white">
             Sorry, but you already used this today. Come back tomorrow if you
@@ -100,17 +104,17 @@ const App = () => {
             </div>
           </div>
           <button
-            disabled={isInputEmpty() || useHasTried}
+            disabled={isInputEmpty() || attempted}
             title={
               isInputEmpty()
                 ? "Please make sure the inputs are not empty"
-                : useHasTried
+                : attempted
                 ? "Already used for today!"
                 : ""
             }
             className={`text-white bg-slate-500 px-4 py-2 rounded-md transition-all duration-200
               ${
-                isInputEmpty() || useHasTried
+                isInputEmpty() || attempted
                   ? "opacity-60 cursor-not-allowed"
                   : "hover:px-6"
               }`}
@@ -123,7 +127,7 @@ const App = () => {
                   yellow_letters
                 )
               );
-              setTried();
+              pressedSubmit();
             }}>
             Submit
           </button>

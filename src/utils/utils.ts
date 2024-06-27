@@ -30,7 +30,7 @@ export const Submit = (
       return !grayLetters.some((letter) => word.includes(letter));
     });
   }
-  console.log(filteredWords);
+
   // yellowwords filteration:
   const yellowLetters = yellow_letters.length > 0 ? yellow_letters : [];
   const isYellowNotNull = yellowLetters.some((item) => item.value !== "");
@@ -44,7 +44,6 @@ export const Submit = (
       });
     });
   }
-  console.log(filteredWords);
 
   // green words filteration:
   const greenLetters = green_letters.length > 0 ? green_letters : [];
@@ -60,7 +59,6 @@ export const Submit = (
       });
     });
   }
-  console.log(filteredWords);
 
   return filteredWords;
 };
