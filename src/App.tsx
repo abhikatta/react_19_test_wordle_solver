@@ -10,7 +10,7 @@ import { Submit } from "./utils/utils";
 import { UnknownAction } from "redux";
 import { Analytics } from "@vercel/analytics/react";
 import { pressedSubmit, resetSubmission } from "./utils/attemped";
-import { key } from "./constants";
+import { Title, key } from "./constants";
 import { dataType } from "./utils/types";
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -21,9 +21,14 @@ const App = () => {
     (state: RootState) => state.words
   );
   const [currentInputPosition, setCurrentInputPosition] = useState<number>(0);
-  const attempted: boolean = (
-    JSON.parse(localStorage.getItem(key) as string) as dataType
-  )?.isSubmitted;
+  const [attempted, setAttempted] = useState(false);
+
+  useEffect(() => {
+    const attempted: boolean = (
+      JSON.parse(localStorage.getItem(key) as string) as dataType
+    )?.isSubmitted;
+    setAttempted(attempted);
+  }, []);
   const onChange = (
     letterType: LetterType,
     letterValue: string,
@@ -71,13 +76,6 @@ const App = () => {
         <div>
           <p className="text-3xl text-white">Loading...</p>
         </div>
-      ) : attempted ? (
-        <div>
-          <p className="text-3xl text-white">
-            Sorry, but you already used this today. Come back tomorrow if you
-            can't solve it.
-          </p>
-        </div>
       ) : (
         <>
           <div className="w-[25rem] h-auto flex flex-col justify-center items-center">
@@ -99,6 +97,7 @@ const App = () => {
             <div className="grid h-auto gap-9 grid-cols-5 grid-rows-2 justify-center items-center">
               <TheForm
                 onChange={onChange}
+                attempted={attempted}
                 setCurrentInputPosition={setCurrentInputPosition}
               />
             </div>
@@ -106,10 +105,10 @@ const App = () => {
           <button
             disabled={isInputEmpty() || attempted}
             title={
-              isInputEmpty()
-                ? "Please make sure the inputs are not empty"
-                : attempted
-                ? "Already used for today!"
+              attempted
+                ? Title.Attempted
+                : isInputEmpty()
+                ? Title.EmptyInput
                 : ""
             }
             className={`text-white bg-slate-500 px-4 py-2 rounded-md transition-all duration-200
@@ -128,6 +127,7 @@ const App = () => {
                 )
               );
               pressedSubmit();
+              setAttempted(true);
             }}>
             Submit
           </button>

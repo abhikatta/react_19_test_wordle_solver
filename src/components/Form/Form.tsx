@@ -1,13 +1,16 @@
 import { useDispatch } from "react-redux";
 import { LetterType } from "../../redux/types";
 import { addGrayLetters } from "../../redux/inputs/inputs";
+import { Title } from "../../constants";
 
 export const TheForm = ({
   setCurrentInputPosition,
   onChange,
+  attempted,
 }: {
   setCurrentInputPosition: (index: number) => void;
   onChange: (LetterType: LetterType, value: string, index: number) => void;
+  attempted: boolean;
 }) => {
   const dispatch = useDispatch();
   return (
@@ -17,6 +20,8 @@ export const TheForm = ({
           <div key={index} className=" font-extrabold text-xl">
             {index < 5 && (
               <input
+                title={attempted ? Title.Attempted : ""}
+                readOnly={attempted}
                 onFocus={(e) => {
                   e.target.select();
                   setCurrentInputPosition(index);
@@ -29,6 +34,8 @@ export const TheForm = ({
             )}
             {index >= 5 && index < 10 && (
               <input
+                title={attempted ? Title.Attempted : ""}
+                readOnly={attempted}
                 onFocus={(e) => {
                   e.target.select();
                   setCurrentInputPosition(index);
@@ -43,6 +50,8 @@ export const TheForm = ({
         );
       })}
       <input
+        title={attempted ? Title.Attempted : ""}
+        readOnly={attempted}
         maxLength={26}
         type="text"
         onChange={(e) => dispatch(addGrayLetters(e.target.value))}
